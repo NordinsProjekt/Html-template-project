@@ -22,6 +22,42 @@
             <h1>HTML Template</h1>
             <p>Welcome to the HTML template!</p>
         </section>
+
+        <section class="flexDisplay flexColumn flexGap">
+            <h2>Calendar example</h2>
+            
+            <!-- 
+                CALENDAR INPUT WITH CUSTOM OVERLAY
+                ===================================
+                Problem: datetime-local inputs show "yyyy-mm-dd --:--" placeholder text
+                         which cannot be easily hidden with CSS alone.
+                
+                Solution: Use a white div overlay positioned on top of the input
+                          to cover the placeholder text and show custom "CheckIn" text.
+                
+                How it works:
+                1. The form wrapper (.calendar-wrapper) has position:relative 
+                   so the overlay can be absolutely positioned inside it.
+                   
+                2. The input has left padding to make room for the calendar icon.
+                
+                3. The overlay div is positioned absolutely over the input text area,
+                   with a white background to hide the placeholder text underneath.
+                   
+                4. pointer-events:none allows clicks to pass through the overlay
+                   to the input below, so users can still click to open the date picker.
+                   
+                5. The onchange event hides the overlay when a valid date is selected:
+                   - this.value is truthy when a date is selected → display:none
+                   - this.value is empty when cleared → display:block
+            -->
+            <form class="calendar-wrapper">
+                <input type="datetime-local" id="meeting" name="meeting"
+                       min="2024-06-01T00:00" max="2024-12-31T23:59"
+                       onchange="document.getElementById('checkin-overlay').style.display = this.value ? 'none' : 'block'">
+                <div id="checkin-overlay" class="checkin-overlay">CheckIn</div>
+            </form>
+        </section>
     </main>
 
     <footer>

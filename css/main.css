@@ -7,8 +7,9 @@
     Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
     - The "symbol *" part is to solve Firefox SVG sprite bug
     - The "html" element is excluded, otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
+    - input elements are excluded to preserve native form controls
  */
-*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+*:where(:not(html, iframe, canvas, img, svg, video, audio, input):not(svg *, symbol *)) {
     all: unset;
     display: revert;
 }
@@ -170,4 +171,66 @@ main > section{
 
 .flexCol {
     flex-direction: column;
+}
+
+/* ===========================================
+   CALENDAR INPUT WITH CUSTOM OVERLAY
+   ===========================================
+   This technique covers the default "yyyy-mm-dd" placeholder
+   with a custom overlay that shows "CheckIn" text.
+   The overlay is hidden via JavaScript when a date is selected.
+*/
+
+/* 
+   Calendar form wrapper
+   - position:relative creates a positioning context for the absolute overlay
+   - inline-block ensures the wrapper shrinks to fit the input
+*/
+.calendar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* 
+   Style the datetime input
+   - Extra left padding (30px) makes room for the calendar icon
+   - The icon is moved to the left side using the pseudo-element below
+*/
+#meeting {
+    padding: 5px 10px 5px 30px;
+    border: 1px solid #ccc;
+}
+
+/* 
+   Move calendar icon to the left side
+   - WebKit browsers (Chrome, Edge, Safari) use this pseudo-element
+   - position:absolute with left:5px places icon at the start
+   - Note: This only works in WebKit-based browsers
+*/
+#meeting::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 5px;
+}
+
+/* 
+   White div overlay to hide "yyyy-mm-dd --:--" placeholder text
+   - position:absolute positions it relative to .calendar-wrapper
+   - left:28px starts after the calendar icon
+   - top:50% + transform:translateY(-50%) centers it vertically
+   - z-index:10 ensures it appears above the input text
+   - pointer-events:none allows clicks to pass through to the input
+   - white background covers the placeholder text underneath
+   - JavaScript hides this when a valid date is selected (display:none)
+*/
+.checkin-overlay {
+    position: absolute;
+    width: 160px;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    pointer-events: none;
+    color: #666;
+    background: white;
+    padding: 2px 60px 2px 5px;
 }
